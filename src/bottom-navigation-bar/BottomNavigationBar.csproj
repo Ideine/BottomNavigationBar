@@ -14,7 +14,6 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>BottomNavigationBar</AssemblyName>
     <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
-    <ReleaseVersion>1.1.3</ReleaseVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
@@ -128,5 +127,7 @@
     <AndroidResource Include="Resources\drawable\bb_bottom_bar_top_shadow.xml" />
     <AndroidResource Include="Resources\values-sw600dp\bools.xml" />
     <AndroidResource Include="Resources\values\dimens.xml" />
+    <AndroidResource Include="Resources\layout\bb_bottom_bar_item_shifting_not_title.xml" />
+    <AndroidResource Include="Resources\layout\bb_bottom_bar_item_fixed_no_title.xml" />
   </ItemGroup>
 </Project>
