@@ -217,6 +217,8 @@ namespace BottomNavigationBar
 
 		public bool IsMenuSelectedMode { get; set; } = true;
 
+		public bool EnableShiftingMagic { get; set; } = false;
+
 		private Color _menuSelectedolor;
 
 		/// <summary>
@@ -1213,23 +1215,26 @@ namespace BottomNavigationBar
 
 				ShiftingMagic (oldTab, v, true);
 			}
+
 			UpdateSelectedTab (FindItemPosition (v));
 		}
 
 		private void ShiftingMagic (View oldTab, View newTab, bool animate)
 		{
-			if (!_isTabletMode && _isShiftingMode && !IgnoreShiftingResize) {
-				if (oldTab is FrameLayout)
-					oldTab = ((FrameLayout)oldTab).GetChildAt (0);
-				if (newTab is FrameLayout)
-					newTab = ((FrameLayout)newTab).GetChildAt (0);
+			if (EnableShiftingMagic) {
+				if (!_isTabletMode && _isShiftingMode && !IgnoreShiftingResize) {
+					if (oldTab is FrameLayout)
+						oldTab = ((FrameLayout)oldTab).GetChildAt (0);
+					if (newTab is FrameLayout)
+						newTab = ((FrameLayout)newTab).GetChildAt (0);
 
-				if (animate) {
-					MiscUtils.ResizeTab (oldTab, oldTab.Width, _inActiveShiftingItemWidth);
-					MiscUtils.ResizeTab (newTab, newTab.Width, _activeShiftingItemWidth);
-				} else {
-					oldTab.LayoutParameters.Width = _inActiveShiftingItemWidth;
-					newTab.LayoutParameters.Width = _activeShiftingItemWidth;
+					if (animate) {
+						MiscUtils.ResizeTab (oldTab, oldTab.Width, _inActiveShiftingItemWidth);
+						MiscUtils.ResizeTab (newTab, newTab.Width, _activeShiftingItemWidth);
+					} else {
+						oldTab.LayoutParameters.Width = _inActiveShiftingItemWidth;
+						newTab.LayoutParameters.Width = _activeShiftingItemWidth;
+					}
 				}
 			}
 		}
@@ -1584,6 +1589,7 @@ namespace BottomNavigationBar
 
 					// We only want to animate the icon to avoid moving the title
 					// Shifting or fixed the padding above icon is always 6dp
+
 					MiscUtils.ResizePaddingTop (icon, icon.PaddingTop, _sixDp, ANIMATION_DURATION);
 
 					if (_isShiftingMode) {
@@ -1598,7 +1604,9 @@ namespace BottomNavigationBar
 					ViewCompat.SetScaleX (title, 1);
 					ViewCompat.SetScaleY (title, 1);
 
-					icon.SetPadding (icon.PaddingLeft, _sixDp, icon.PaddingRight, icon.PaddingBottom);
+					if (EnableShiftingMagic) {
+						icon.SetPadding (icon.PaddingLeft, _sixDp, icon.PaddingRight, icon.PaddingBottom);
+					}
 
 					if (_isShiftingMode) {
 						ViewCompat.SetAlpha (icon, 1.0f);
@@ -1663,7 +1671,9 @@ namespace BottomNavigationBar
 				ViewCompat.SetScaleX (title, scale);
 				ViewCompat.SetScaleY (title, scale);
 
-				icon.SetPadding (icon.PaddingLeft, iconPaddingTop, icon.PaddingRight, icon.PaddingBottom);
+				if (EnableShiftingMagic) {
+					icon.SetPadding (icon.PaddingLeft, iconPaddingTop, icon.PaddingRight, icon.PaddingBottom);
+				}
 
 				if (_isShiftingMode) {
 					ViewCompat.SetAlpha (icon, _tabAlpha);
