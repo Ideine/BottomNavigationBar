@@ -136,5 +136,6 @@
     <AndroidResource Include="Resources\values\dimens.xml" />
     <AndroidResource Include="Resources\layout\bb_bottom_bar_item_shifting_not_title.xml" />
     <AndroidResource Include="Resources\layout\bb_bottom_bar_item_fixed_no_title.xml" />
+    <AndroidResource Include="Resources\layout\bb_bottom_bar_item_shifting_no_space.xml" />
   </ItemGroup>
 </Project>

@@ -213,6 +213,12 @@ namespace BottomNavigationBar
 
 		public bool IsNoTitleMode { get; set; } = false;
 
+		public float MinTitleScale { get; set; } = 0f;
+
+		public bool IsTitleAlwaysVisible { get; set; } = false;
+
+		public bool IsAlwaysResizePaddingTop { get; set; } = true;
+
 		public bool ShowTitleOnPresseMode { get; set; } = true;
 
 		public bool IsMenuSelectedMode { get; set; } = true;
@@ -1365,7 +1371,7 @@ namespace BottomNavigationBar
 
 				if (_isShiftingMode && !_isTabletMode) {
 					if (!IsNoTitleMode) {
-						layoutResource = Resource.Layout.bb_bottom_bar_item_shifting;
+						layoutResource = IsTitleAlwaysVisible ? Resource.Layout.bb_bottom_bar_item_shifting_no_space : Resource.Layout.bb_bottom_bar_item_shifting;
 					} else {
 						layoutResource = Resource.Layout.bb_bottom_bar_item_shifting_not_title;
 					}
@@ -1570,6 +1576,7 @@ namespace BottomNavigationBar
 				}
 				if (IsMenuSelectedMode) {
 					icon.SetColorFilter (_menuSelectedolor);
+					title?.SetTextColor (_menuSelectedolor);
 				}
 
 				if (title == null) {
@@ -1590,13 +1597,22 @@ namespace BottomNavigationBar
 					// We only want to animate the icon to avoid moving the title
 					// Shifting or fixed the padding above icon is always 6dp
 
-					MiscUtils.ResizePaddingTop (icon, icon.PaddingTop, _sixDp, ANIMATION_DURATION);
+					if (IsAlwaysResizePaddingTop) {
+						MiscUtils.ResizePaddingTop (icon, icon.PaddingTop, _sixDp, ANIMATION_DURATION);
+					}
 
 					if (_isShiftingMode) {
 						ViewCompat.Animate (icon)
 							.SetDuration (ANIMATION_DURATION)
 							.Alpha (1.0f)
 							.Start ();
+
+						if (title != null) {
+							ViewCompat.Animate (title)
+								.SetDuration (ANIMATION_DURATION)
+								.Alpha (1.0f)
+								.Start ();
+						}
 					}
 
 					HandleBackgroundColorChange (tabPosition, tab);
@@ -1640,12 +1656,18 @@ namespace BottomNavigationBar
 			}
 			if (IsMenuSelectedMode) {
 				icon.SetColorFilter (_inActiveColor);
+				title?.SetTextColor (_inActiveColor);
 			}
 			if (title == null) {
 				return;
 			}
 
 			float scale = _isShiftingMode ? 0 : 0.86f;
+
+			if (IsTitleAlwaysVisible) {
+				scale = _isShiftingMode ? MinTitleScale : 1f;
+			}
+
 			int iconPaddingTop = _isShiftingMode ? _sixteenDp : _eightDp;
 
 			if (animate) {
@@ -1655,11 +1677,15 @@ namespace BottomNavigationBar
 					.ScaleY (scale);
 
 				if (_isShiftingMode)
-					titleAnimator.Alpha (0);
+					if (!IsTitleAlwaysVisible) {
+						titleAnimator.Alpha (0);
+					}
 
 				titleAnimator.Start ();
 
-				MiscUtils.ResizePaddingTop (icon, icon.PaddingTop, iconPaddingTop, ANIMATION_DURATION);
+				if (IsAlwaysResizePaddingTop) {
+					MiscUtils.ResizePaddingTop (icon, icon.PaddingTop, iconPaddingTop, ANIMATION_DURATION);
+				}
 
 				if (_isShiftingMode) {
 					ViewCompat.Animate (icon)
@@ -1677,7 +1703,9 @@ namespace BottomNavigationBar
 
 				if (_isShiftingMode) {
 					ViewCompat.SetAlpha (icon, _tabAlpha);
-					ViewCompat.SetAlpha (title, 0);
+					if (!IsTitleAlwaysVisible) {
+						ViewCompat.SetAlpha (title, 0);
+					}
 				}
 			}
 		}
