@@ -213,7 +213,7 @@ namespace BottomNavigationBar
 
 		public bool IsNoTitleMode { get; set; } = false;
 
-		public float MinTitleScale { get; set; } = 0f;
+		public float MinTitleScale { get; set; } = 1f;
 
 		public bool IsTitleAlwaysVisible { get; set; } = false;
 
